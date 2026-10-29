@@ -1,0 +1,9 @@
+# Student outputs (never commit them to the course repository)
+results/
+results_quick/
+submission/
+HW2_submission.zip
+# Python / Jupyter
+.venv/
+__pycache__/
+.ipynb_checkpoints/
