@@ -1,5 +1,7 @@
 # MCEN 4155/5155 HW2: Optimizing a soft/stiff cantilever
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/iamtanay7/AMDS-HW2/blob/master/HW2_starter.ipynb)
+
 You are given a mass-spring-damper simulator of a 2-D cantilever beam made of
 square cells. Each cell is either **soft** or **stiff**. Your job is to choose
 the material of every cell so that the bent beam's centerline matches a target
