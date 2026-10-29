@@ -117,8 +117,8 @@ Sections 9-11 print `[TODO]` until you have written each optimizer, then `[PASS]
 **Run times.** `QUICK_MODE = True` (2 runs x 100 evaluations) takes about 2-5
 minutes for all three targets; use it while debugging. The assignment setting
 (`QUICK_MODE = False`) costs about 2 minutes per run of all three methods on a
-laptop and about 3-4 minutes on free Colab; with 10 runs that is about 20 minutes
-per target on a laptop and 35 minutes per target on Colab. Run one target per
+laptop and about 3 minutes on free Colab; with 10 runs that is about 20 minutes
+per target on a laptop and 30 minutes per target on Colab. Run one target per
 sitting (`TARGETS_TO_RUN`); finished work is saved immediately and skipped when you
 run the cell again, so an interrupted run can simply be restarted. The very first
 simulation in a session takes a few extra seconds to compile.

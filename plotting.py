@@ -101,8 +101,8 @@ def plot_fracture_demo(result, filename=None):
                title=f"Just before first failure (t = {times[before]:.3f} s, "
                      f"F = {config.fracture_load_rate * times[before]:.2f} N)")
     draw_links(axes[1, 0], X[after], beam, failed=failed_after,
-               title=f"After fracture (t = {times[after]:.3f} s): "
-                     f"{int(failed_after.sum())} failed links (red)")
+               title=f"After fracture (t = {times[after]:.3f} s): {int(failed_after.sum())} "
+                     f"failed so far ({result['n_failed']} in total), red")
     for ax in (axes[0, 0], axes[0, 1], axes[1, 0]):
         ax.set(**lim)
 
