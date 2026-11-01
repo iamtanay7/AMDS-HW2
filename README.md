@@ -106,7 +106,7 @@ touching your notebook. Your outputs (`results/`, `submission/`,
 | 9 | **random search** | ✏️ yes | all |
 | 10 | **genetic algorithm** | ✏️ yes | all |
 | 11 | **gradient-based optimization** (JAX) | ✏️ yes | 5155 required, 4155 optional |
-| 12 | continuous-to-binary projection analysis | add your own comparisons | 5155 required, 4155 optional |
+| 12 | continuous-to-binary projection analysis (one full-budget cosine run, about 4-6 minutes the first time) | no | 5155 required, 4155 optional |
 | 13-14 | repeated runs (resumable) and convergence plots | set `QUICK_MODE = False` for the final run | all |
 | 15 | checklist; writes `summary.csv` and `HW2_submission.zip` | no | all |
 
