@@ -78,7 +78,7 @@ def plot_design_result(problem, design, filename=None, title=None):
         fig.suptitle(title)
     fig.tight_layout()
     if filename:
-        fig.savefig(filename, dpi=120)
+        fig.savefig(filename, dpi=120, bbox_inches="tight")
         plt.close(fig)
     return fig
 
@@ -120,5 +120,5 @@ def plot_fracture_demo(result, filename=None):
     ax.set_title("Load and failed links vs time")
     fig.tight_layout()
     if filename:
-        fig.savefig(filename, dpi=120)
+        fig.savefig(filename, dpi=120, bbox_inches="tight")
     return fig

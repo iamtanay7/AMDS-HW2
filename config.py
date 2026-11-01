@@ -21,9 +21,12 @@ class Config:
     thickness: float = 0.01      # [m] out-of-plane thickness (used in E -> k)
 
     # ---------------- Materials ------------------------------------------------
-    # Effective (lattice-equivalent) Young's moduli. See materials.py.
-    E_soft: float = 1.0e6        # [Pa]
-    E_stiff: float = 10.0e6      # [Pa]
+    # Effective lattice moduli: the values that set the spring stiffnesses (see
+    # materials.py), not measured properties of a particular real material.
+    # Contrast 1:500. The time step depends only on E_stiff, so a softer E_soft
+    # costs no extra run time.
+    E_soft: float = 0.02e6       # [Pa] = 0.02 MPa
+    E_stiff: float = 10.0e6      # [Pa] = 10 MPa
     density: float = 1000.0      # [kg/m^3], same for both materials
 
     # ---------------- Damping (Rayleigh: C = alpha*M + beta*K) -----------------
@@ -57,8 +60,8 @@ class Config:
     fracture_tension_only: bool = False    # True: only tensile links can fail
 
     # ---------------- Optimization defaults ------------------------------------
-    eval_budget: int = 1000      # function evaluations per run
-    n_seeds: int = 10            # repeated independent runs
+    eval_budget: int = 3000      # function evaluations per run
+    n_seeds: int = 5             # repeated independent runs
 
 
 CONFIG = Config()

@@ -12,12 +12,13 @@ with i counted over ALL function evaluations (problem.log). Continuous designs
 from the gradient method are charged evaluations but cannot set the
 best-so-far value, because they are not buildable soft/stiff designs.
 
-Across seeds we plot the mean curve and a 2.5-97.5 percentile band (the
-central 95% of the runs). The band shows run-to-run spread; it is not a
-confidence interval of the mean. With 10 runs it is close to the min-max range.
+Across seeds we plot the mean curve and a shaded band. With fewer than 10 runs
+(the assignment uses 5) the band is the min-max range over the runs; with many
+runs it can be the 2.5-97.5 percentile band. Either way it shows run-to-run
+spread; it is not a confidence interval of the mean.
 
 In the notebook, pass your own optimizer functions to run_trials:
-    data = run_trials(random_search, "cosine", n_seeds=10, budget=1000, problem=problem)
+    data = run_trials(random_search, "cosine", n_seeds=5, budget=3000, problem=problem)
 """
 import argparse
 import os
@@ -144,13 +145,16 @@ def load_results(target, results_dir=RESULTS_DIR):
     return out
 
 
-def plot_convergence(results, target, filename=None, band="percentile"):
+def plot_convergence(results, target, filename=None, band="auto"):
     """One figure: mean best-so-far curve and a band per method.
 
-    band = "percentile": 2.5-97.5 percentile of the runs (default)
-    band = "minmax"    : best and worst run (more honest for very few runs)
+    band = "minmax"    : best and worst run
+    band = "percentile": 2.5-97.5 percentile of the runs (meaningful only with many runs)
+    band = "auto"      : min-max for fewer than 10 runs (the assignment uses 5), else percentile
     Saves it to filename (default results/convergence_<target>.png) and returns it."""
-    fig, ax = plt.subplots(figsize=(7, 4.5))
+    if band == "auto":
+        band = "minmax" if min(len(d["curves"]) for d in results.values()) < 10 else "percentile"
+    fig, ax = plt.subplots(figsize=(7.5, 5))
     for method_name, data in results.items():
         curves = np.asarray(data["curves"])
         mean, lo, hi = summarize(curves)
@@ -160,19 +164,24 @@ def plot_convergence(results, target, filename=None, band="percentile"):
                 lo, hi = np.nanmin(curves, axis=0), np.nanmax(curves, axis=0)
         evals = np.arange(1, len(mean) + 1)
         color = COLORS.get(method_name)
-        ax.plot(evals, mean, color=color, label=f"{method_name} (mean of {len(curves)} runs)")
+        ax.plot(evals, mean, color=color, label=f"{method_name} (mean of {len(curves)} run{'s' if len(curves) != 1 else ''})")
         ax.fill_between(evals, lo, hi, color=color, alpha=0.2)
     ax.set_yscale("log")
-    ax.set_xlabel("function evaluations")
-    ax.set_ylabel("best-so-far objective J  [m$^2$]")
-    label = "2.5-97.5 percentile of runs" if band == "percentile" else "min-max of runs"
-    ax.set_title(f"{target} target: best-so-far J (band: {label})")
+    budget = max(len(np.asarray(d["curves"])[0]) for d in results.values())
+    runs = sorted({len(d["curves"]) for d in results.values()})
+    ax.set_xlabel("Function evaluations", fontsize=11)
+    ax.set_ylabel("Best-so-far objective J  [m$^2$]", fontsize=11)
+    ax.set_xlim(0, budget)
+    ax.tick_params(labelsize=9, labelbottom=True, labelleft=True)
+    label = "2.5-97.5 percentile of runs" if band == "percentile" else "min-max over runs"
+    ax.set_title(f"Target: {target}\nBudget: {budget} evaluations    Runs: {'/'.join(map(str, runs))}\n"
+                 f"(line: mean best-so-far; shaded: {label})", fontsize=10)
     ax.grid(True, which="both", alpha=0.3)
     ax.legend()
     fig.tight_layout()
     filename = filename or os.path.join(RESULTS_DIR, f"convergence_{target}.png")
     os.makedirs(os.path.dirname(filename) or ".", exist_ok=True)
-    fig.savefig(filename, dpi=130)
+    fig.savefig(filename, dpi=130, bbox_inches="tight")
     return fig
 
 
@@ -184,7 +193,6 @@ def final_statistics(results, A):
         rows[method_name] = {
             "runs": len(r), "budget": np.asarray(data["curves"]).shape[1],
             "mean": r.mean(), "std": r.std(ddof=1) if len(r) > 1 else 0.0,
-            "p2.5": np.percentile(r, 2.5), "p97.5": np.percentile(r, 97.5),
             "best": r.min(), "worst": r.max(),
             "seconds_per_run": float(np.mean(data["wall_time"]))}
     return rows
@@ -193,19 +201,17 @@ def final_statistics(results, A):
 def summary_table(results, target, A):
     """Text table of final_statistics (RMS error / A at the end of each run)."""
     lines = [f"{target} target, RMS error / A at the end of each run",
-             f"{'method':9s} {'runs':>4s} {'mean':>7s} {'std':>7s} {'p2.5':>7s} {'p97.5':>7s} "
-             f"{'best':>7s} {'worst':>7s} {'s/run':>6s}"]
+             f"{'method':9s} {'runs':>4s} {'mean':>7s} {'std':>7s} {'best':>7s} {'worst':>7s} {'s/run':>6s}"]
     for method_name, s in final_statistics(results, A).items():
         lines.append(f"{method_name:9s} {s['runs']:4d} {s['mean']:7.4f} {s['std']:7.4f} "
-                     f"{s['p2.5']:7.4f} {s['p97.5']:7.4f} {s['best']:7.4f} {s['worst']:7.4f} "
-                     f"{s['seconds_per_run']:6.1f}")
+                     f"{s['best']:7.4f} {s['worst']:7.4f} {s['seconds_per_run']:6.1f}")
     return "\n".join(lines)
 
 
 def write_summary_csv(all_results, A, filename):
     """One CSV row per (target, method) with the final_statistics columns."""
     import csv
-    columns = ["runs", "budget", "mean", "std", "p2.5", "p97.5", "best", "worst", "seconds_per_run"]
+    columns = ["runs", "budget", "mean", "std", "best", "worst", "seconds_per_run"]
     with open(filename, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["target", "method"] + [f"rms_over_A_{c}" if c not in

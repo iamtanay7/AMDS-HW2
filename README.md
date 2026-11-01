@@ -13,14 +13,24 @@ files are the simulator behind it; you do not need to edit them.
 
 ---
 
-You can work in **Google Colab** (nothing to install) or on **your own computer**.
-Both use the same notebook and the same simulator files from this repository.
+Choose **ONE** of the two options below (not both). Both use the same notebook and
+the same simulator files from this repository. **Option 1 (Colab) is recommended**: it
+needs no Python installation on your computer.
 
-## 1. Using Google Colab
+This assignment uses Python and JAX, whereas earlier work in the course used MATLAB.
+You are not expected to arrive as a Python expert; additional office hours are
+available as needed (see Canvas). Recommended resource: the official [Python tutorial](https://docs.python.org/3/tutorial/).
+[NumPy for MATLAB users](https://numpy.org/doc/stable/user/numpy-for-matlab-users.html)
+is a handy side-by-side table of MATLAB and NumPy commands.
 
-1. Open the HW2 notebook link from the course page.
-2. Choose *File → Save a copy in Drive* and work in your copy (the shared link is
-   read-only).
+## 1. OPTION 1: Google Colab (recommended)
+
+1. Click the HW2 Colab link (on Canvas, or the "Open in Colab" badge above) while
+   signed in to your Google account.
+2. Choose *File → Save a copy in Drive*. This saves a copy of the notebook into
+   **your Google Drive** (online, in *My Drive → Colab Notebooks*), **not** onto your
+   PC. Colab opens the copy in a new tab: work only in that copy (the original link
+   is read-only). Colab saves your copy automatically.
 3. Run the setup cell (section 2) first, every session. It downloads this
    repository into `hw2_backend/` and checks the packages; Colab already has JAX,
    NumPy and Matplotlib, so usually nothing is installed.
@@ -32,19 +42,31 @@ Both use the same notebook and the same simulator files from this repository.
 7. Download `HW2_submission.zip` (section 15) and your notebook before ending the
    session.
 
-Colab's local filesystem is temporary: when the runtime disconnects, files such as
+Colab's working files are temporary: when the runtime disconnects, files such as
 `results/` and `submission/` are deleted (your notebook in Drive is safe). To keep
 results across sessions, set `USE_DRIVE = True` in the setup cell; they are then
 saved in the Drive folder `HW2_outputs`. Leave the runtime type on CPU; a GPU does
 not help.
 
-## 2. Using your own computer (Jupyter or VS Code)
+## 2. OPTION 2: your own computer (Jupyter or VS Code)
 
-You need Python 3.10 or newer and git. Once:
+You need Python 3.10 or newer. You do **not** need to know Git.
+
+**Get the files (once).**
+
+1. Open the course GitHub repository link (on Canvas) in your web browser.
+2. Either:
+   * **No Git needed:** click the green **Code** button, then **Download ZIP**. Extract
+     the ZIP file (Windows: right-click → *Extract All*; macOS: double-click).
+   * **If you have Git:** `git clone <repository link>` in a terminal.
+3. You now have one folder (e.g. `AMDS-HW2-master`) that contains
+   `HW2_starter.ipynb` next to the simulator `.py` files.
+
+**Install the packages (once).** Open a terminal *in that folder* (Windows: open the
+folder in File Explorer, type `powershell` in the address bar and press Enter;
+macOS: right-click the folder → *New Terminal at Folder*), then run:
 
 ```bash
-git clone <course repository URL> hw2
-cd hw2
 python3 -m venv .venv
 source .venv/bin/activate          # Windows PowerShell: .venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
@@ -53,40 +75,40 @@ python -m pip install -r requirements.txt
 This installs JAX, NumPy, Matplotlib and JupyterLab into `.venv`. Everything runs
 on a normal laptop CPU; no GPU is needed.
 
-Each time you work on the homework:
+**Each time you work on the homework**, open a terminal in that folder and run:
 
 ```bash
-cd hw2
-source .venv/bin/activate
+source .venv/bin/activate          # Windows PowerShell: .venv\Scripts\Activate.ps1
 jupyter lab
 ```
 
 Open `HW2_starter.ipynb` and run the cells in order (`Shift + Enter`), or
-*Kernel → Restart Kernel and Run All Cells*. The setup cell uses the files in this
-folder and downloads nothing. (VS Code: open the folder, open the notebook, and
-pick the `.venv` Python as the kernel.)
+*Kernel → Restart Kernel and Run All Cells*. Always open the notebook from inside
+this folder and do not move it out: the setup cell finds the simulator files next to
+it. (VS Code: *File → Open Folder* on this folder, open the notebook, and pick the
+`.venv` Python as the kernel.)
 
-Tip: keep the notebook in this folder but save your work under a new name
+Tip (Git users): save your work under a new name in the same folder
 (e.g. `HW2_yourname.ipynb`), so `git pull` can update the course files without
 touching your notebook. Your outputs (`results/`, `submission/`,
 `HW2_submission.zip`) are ignored by git.
 
 ## 3. What is in the notebook
 
-| Section | What happens | You edit? |
-| --- | --- | --- |
-| 1-3 | introduction, **setup cell** (run first), the parameters in `config.py` | no |
-| 4 | build the 20 x 4 cell beam: clamp, load, centerline | no |
-| 5 | fracture demo (worked example) | no |
-| 6 | material assignment: E → link stiffness and damping | no |
-| 7 | the three target shapes | no |
-| 8 | the objective J and the function-evaluation convention | no |
-| 9 | **random search** | ✏️ yes |
-| 10 | **genetic algorithm** | ✏️ yes |
-| 11 | **gradient-based optimization** | ✏️ yes |
-| 12 | thresholding the gradient design | no (add your own comparisons) |
-| 13-14 | repeated runs (resumable) and convergence plots | set `QUICK_MODE = False` for the final run |
-| 15 | checklist; writes `summary.csv` and `HW2_submission.zip` | no |
+| Section | What happens | You edit? | Who |
+| --- | --- | --- | --- |
+| 1-3 | introduction, **setup cell** (run first), the parameters in `config.py`; set `COURSE` | `COURSE` only | all |
+| 4 | build the 20 x 4 cell beam: clamp, load, centerline | no | all |
+| 5 | fracture demo (worked example) | no | all |
+| 6 | material assignment: E → link stiffness and damping | no | all |
+| 7 | the three target shapes | no | linear, cosine: all; sigmoid: 5155 |
+| 8 | the objective J and the function-evaluation convention | no | all |
+| 9 | **random search** | ✏️ yes | all |
+| 10 | **genetic algorithm** | ✏️ yes | all |
+| 11 | **gradient-based optimization** (JAX) | ✏️ yes | 5155 required, 4155 optional |
+| 12 | continuous-to-binary projection analysis | add your own comparisons | 5155 required, 4155 optional |
+| 13-14 | repeated runs (resumable) and convergence plots | set `QUICK_MODE = False` for the final run | all |
+| 15 | checklist; writes `summary.csv` and `HW2_submission.zip` | no | all |
 
 Before you write any code, *Restart Kernel and Run All Cells* already runs to the
 end: unfinished optimizers print `TODO: complete ...` instead of crashing.
@@ -108,20 +130,27 @@ Number of failed links: 15 of 208
 ```
 Section 8:
 ```
-all soft : J = 1.250e-04 m^2, RMS error =  74.5% of A
+all soft : J = 3.139e-03 m^2, RMS error = 373.5% of A
 all stiff: J = 4.791e-05 m^2, RMS error =  46.1% of A
-random   : J = 4.528e-06 m^2, RMS error =  14.2% of A
+random   : J = 1.880e-03 m^2, RMS error = 289.0% of A
 ```
+Errors above 100% are expected here: the soft material is 500 times softer than
+the stiff one, so mostly-soft designs droop far past the 15 mm target. Good designs
+need a careful layout of the two materials, which is what the optimizers are for.
+
 Sections 9-11 print `[TODO]` until you have written each optimizer, then `[PASS]`.
 
 **Run times.** `QUICK_MODE = True` (2 runs x 100 evaluations) takes about 2-5
-minutes for all three targets; use it while debugging. The assignment setting
-(`QUICK_MODE = False`) costs about 2 minutes per run of all three methods on a
-laptop and about 3 minutes on free Colab; with 10 runs that is about 20 minutes
-per target on a laptop and 30 minutes per target on Colab. Run one target per
-sitting (`TARGETS_TO_RUN`); finished work is saved immediately and skipped when you
-run the cell again, so an interrupted run can simply be restarted. The very first
-simulation in a session takes a few extra seconds to compile.
+minutes for all targets; use it while debugging. The assignment setting
+(`QUICK_MODE = False`: 5 runs x 3000 evaluations per method and target) costs
+about 6 minutes per run of all three methods on a laptop (random search ~1 min,
+GA ~1 min, gradient method ~3.7 min) and roughly 8 minutes on free Colab. That
+is about 30 minutes per target on a laptop and 40 minutes on Colab for 5155
+(three targets), and about a third of that for 4155 (random search and GA only,
+two targets). Run one target per sitting (`TARGETS_TO_RUN`); finished work is
+saved immediately and skipped when you run the cell again, so an interrupted run
+can simply be restarted. The very first simulation in a session takes a few
+extra seconds to compile.
 
 ## 4. The problem in brief
 
@@ -129,7 +158,8 @@ simulation in a session takes a few extra seconds to compile.
   clamped. A total downward force of 1 N on the right-edge nodes ramps up over
   0.05 s and is held until T = 0.2 s, when the beam has settled.
 * **Design:** one value per cell (80 in total), numbered `ix * 4 + iy`.
-  Binary `b`: 0 = soft (E = 1 MPa), 1 = stiff (E = 10 MPa). Continuous `z` in
+  Binary `b`: 0 = soft (E = 0.02 MPa), 1 = stiff (E = 10 MPa),
+  both effective lattice moduli (contrast 1:500). Continuous `z` in
   [0, 1] for the gradient method: `E = E_soft + z (E_stiff - E_soft)`. Always
   clip z to [0, 1].
 * **Centerline:** the row of 21 nodes at mid-height. Their vertical
@@ -138,13 +168,14 @@ simulation in a session takes a few extra seconds to compile.
 * **Objective:** `J = mean((y_centerline - y_target)^2)` [m²].
 * **Targets** (A = 0.15 L = 15 mm, β = 8): linear `-A ξ`; cosine
   `-(A/2)(1 - cos πξ)`; sigmoid `-A (s(ξ) - s(0))/(s(1) - s(0))` with
-  `s(u) = 1/(1 + exp(-β(u - 0.5)))`. None of them can be matched exactly with a
-  single tip load; the sigmoid is the hardest. Compare the methods with each
+  `s(u) = 1/(1 + exp(-β(u - 0.5)))`. The cosine and sigmoid need an S-shaped
+  (inflected) centerline, which only a heterogeneous layout can produce; the sigmoid
+  is the hardest. Compare the methods with each
   other, not with zero error.
 * **Evaluation counting:** `evaluate` = 1, `evaluate_batch` = 1 per design,
   `value_and_grad` = 1. Convergence plots show the best-so-far J of a *binary*
-  design vs. function evaluations, with the mean over runs and a 2.5-97.5
-  percentile band (run-to-run spread, not a confidence interval).
+  design vs. function evaluations, with the mean over the runs and the min-max range
+  over the runs (run-to-run spread, not a confidence interval).
 
 ## 5. Files
 
